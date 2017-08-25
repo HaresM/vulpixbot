@@ -1042,10 +1042,7 @@ bot.on('message', message => {
             message.channel.send(embed);
         }
         else if (command(channel, cmd, "bug")){
-            if (config[id].bugs == undefined){
-                config[id].bugs = {};
-                saveConfig();
-            }
+            if (!config[id].bugs) config[id].bugs = {};
             if (args[0] == "list"){
                 var bug_titles = Object.keys(config[id].bugs);
                 message.channel.send(`Known bugs:\`\`\`\n${bug_titles.length == 0 ? `---` : bug_titles.join('\n')}\`\`\``)
@@ -1095,7 +1092,6 @@ bot.on('message', message => {
                         message.channel.send(`There is already a bug with that title.`);
                         return;
                     }
-                    if (!config[id].bugs) config[id].bugs = {};
                     config[id].bugs[name] = {};
                     config[id].bugs[name].desc = desc;
                     config[id].bugs[name].username = message.member.user.tag;
