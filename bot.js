@@ -1090,13 +1090,11 @@ bot.on('message', message => {
                         message.channel.send(`Invalid bug submission format.`);
                         return;
                     }
-                    name = name.toUpperCase();
                     desc = msg.split('description:')[1].split('"')[1].split('"')[0];
                     if (config[id].bugs[name] != undefined){
                         message.channel.send(`There is already a bug with that title.`);
                         return;
                     }
-                    name = name.toUpperCase();
                     config[id].bugs[name] = {};
                     config[id].bugs[name].desc = desc;
                     config[id].bugs[name].username = message.member.user.tag;
@@ -2431,8 +2429,28 @@ If you feel there are methods missing to make it easier to create a command, ple
                 message.channel.send(`These are all custom commands currently configured:\`\`\`${keys.length == 0 ? `---` : cmds}\`\`\`To create a new command, use \`v-config commands create\`. To delete a command, use \`v-config commands delete [index]\`. To see the code behind a command, use \`v-config commands view [index]\`.`);
             }
         }
+        else if (cmd == "database"){
+            if (!arg[1]){
+                send(`Use one of the following commands to configure a database for your game:\`\`\`v-config database KEYWORD\`\`\``);
+            }
+            else if (arg[1] == "pokemon"){
+
+            }
+            else if (arg[1] == "encounters"){
+                
+            }
+            else if (arg[1] == "trainers"){
+                
+            }
+            else if (arg[1] == "region"){
+                
+            }
+            else if (arg[1] == "types"){
+                
+            }
+        }
         else{
-            message.channel.send('To configure the bot for this server, use one of the following commands: ```v-config prefix\nv-config messages\nv-config roles\nv-config reset_to_default\nv-config channels\nv-config show\nv-config bot_log\nv-config commands```')
+            message.channel.send('To configure the bot for this server, use one of the following commands: ```v-config prefix\nv-config messages\nv-config roles\nv-config reset_to_default\nv-config channels\nv-config show\nv-config bot_log\nv-config commands\nv-config game```')
         }
     }
 });
