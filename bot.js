@@ -1095,6 +1095,7 @@ bot.on('message', message => {
                         message.channel.send(`There is already a bug with that title.`);
                         return;
                     }
+                    if (!config[id].bugs) config[id].bugs = {};
                     config[id].bugs[name] = {};
                     config[id].bugs[name].desc = desc;
                     config[id].bugs[name].username = message.member.user.tag;
