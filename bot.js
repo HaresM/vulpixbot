@@ -1074,7 +1074,7 @@ bot.on('message', message => {
                     var name;
                     var desc;
                     if (msg.contains('name:')){
-                        name = msg.split('name:')[1].split('"')[1].split('"')[0];
+                        name = msg.split('name:')[1].splti('"')[1].split('"')[0];
                     }
                     else{
                         message.channel.send(`Invalid bug submission format.`);
@@ -1779,7 +1779,7 @@ bot.on('message', message => {
                     }
                     if (config[guilds[i].id].messages.news.status == "on"){
                         var channel = tryGetChannel(guilds[i], config[guilds[i].id].messages.news.channel);
-                        if (channel.constructor.name == 'TextChannel'){
+                        if (channel && channel.constructor.name == 'TextChannel'){
                             channel.send(args.join(' '));
                         }
                         else{
