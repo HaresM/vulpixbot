@@ -1578,7 +1578,8 @@ bot.on('message', message => {
             }});
         }
         if (config[id] && config[id].commands){
-            var cmd = args.length > 0 ? cmd + ' ' + args.join(' ') : cmd;
+            var args = message.content.split(' ');
+            var cmd = args[0];
             var cmds = Object.keys(config[id].commands);
             if (cmds.contains(cmd)){
                 if (!config[id].channels) config[id].channels = {};
