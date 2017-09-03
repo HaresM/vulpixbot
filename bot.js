@@ -557,9 +557,10 @@ bot.on('message', message => {
         if (!user && !isNaN(str)){
             user = guild.members.find(m => m.id == str);
         }
-        if (!user && str.contains('<@!')){
+        if (!user && str.contains('<@')){
             try{
-                var id = str.split('<@!')[1].split('>')[0];
+                var id = str.split('<@')[1].split('>')[0];
+                if (str.contains('!')) str.splice(str.indexOf('!'), 0);
                 user = guild.members.find(m => m.id == id);
             }
             catch (e) {}
