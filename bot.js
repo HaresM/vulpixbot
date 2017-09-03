@@ -200,7 +200,7 @@ function userExists(guild, username){
     return user != null && user != undefined;
 }
 
-function getUser(guild, _user){
+function _getUser(guild, _user){
 	var user = guild.members.get(_user);
 	if (user) user = user;
 	if (!user) user = guild.members.find(m => m.user.username === _user);
@@ -230,41 +230,6 @@ function tryGetChannel(guild, str){
     }
     catch (e){}
     return channel;
-}
-
-function tryGetUser(guild, str){
-	if (!str) return;
-    var user;
-    while (str.contains('%20')){
-        str = str.replace('%20', ' ');
-    }
-    if (userExists(guild, str)){
-        user = getUser(guild, str);
-    }
-    else{
-        var name;
-        try{
-            name = guild.members.find(m => m.nickname == str);
-        }
-        catch (err){
-            try{
-                if (!name) name = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase());
-                if (name) user = name.user;
-            }
-            catch (err){
-                return null;
-            }
-        }
-    }
-    if (!user){
-    	user = guild.members.get(str);
-    	if (user) user = user.user;
-    }
-    if (!user){
-        var tmp = str.split('<@')[1].split('>')[0];
-        user = guild.members.get(tmp).user;
-    }
-    return user;
 }
 
 function channelExists(guild, channel){
@@ -574,7 +539,7 @@ bot.on('message', message => {
         role = guild.roles.find('name', role);
       }
       if (user.constructor.name != 'User'){
-        user = tryGetUser(guild, user);
+        user = getUser(guild, user);
       }
       if (!user) return false;
       var rolepos = role.position;
@@ -583,13 +548,58 @@ bot.on('message', message => {
       return Math.max.apply(Math, positions) > role.position && Math.max.apply(Math, positions) > Math.max.apply(Math, upositions);  
     }
 
+    function getMember(str){
+        user = getUser(str);
+        if (user){
+            return guild.members.get(user.id);
+        }
+        else{
+            return null;
+        }
+    }
+
+    function getUser(str){
+        if (!str) return;
+        var user;
+        while (str.contains('%20')){
+            str = str.replace('%20', ' ');
+        }
+        if (userExists(guild, str)){
+            user = _getUser(guild, str);
+        }
+        else{
+            var name;
+            try{
+                name = guild.members.find(m => m.nickname == str);
+            }
+            catch (err){
+                try{
+                    if (!name) name = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase());
+                    if (name) user = name.user;
+                }
+                catch (err){
+                    return null;
+                }
+            }
+        }
+        if (!user){
+            user = guild.members.get(str);
+            if (user) user = user.user;
+        }
+        if (!user){
+            var tmp = str.split('<@')[1].split('>')[0];
+            user = guild.members.get(tmp).user;
+        }
+        return user;
+    }
+
     function hasRole(user, role){
         if (!user || !role) return false
         if (role.constructor.name != 'Role'){
           role = guild.roles.find('name', role);
         }
         if (user.constructor.name != 'User'){
-          user = tryGetUser(guild, user);
+          user = getUser(user);
         }
         if (!user) return false;
         var role = guild.members.get(user.id).roles.find('name', role);
@@ -605,7 +615,7 @@ bot.on('message', message => {
             user = user.user;
         }
         else if (user.constructor.name != 'User'){
-          user = tryGetUser(guild, user);
+          user = getUser(user);
         }
         if (!user) return false;
         if (canAddRole(user, role)){
@@ -864,7 +874,7 @@ bot.on('message', message => {
         }
         else if (command(channel, cmd, "rank")){
             var user = message.mentions.users.first();
-            if (!user) user = tryGetUser(guild, args.join(' '));
+            if (!user) user = getUser(args.join(' '));
             if (!user) user = message.member.user;
             if (user.bot){
                 message.channel.send(`Bots do not have ranks.`);
@@ -985,7 +995,7 @@ bot.on('message', message => {
         }
         else if (command(channel, cmd, "user")){
             var user = message.mentions.users.first();
-            if (!user) user = tryGetUser(guild, args.join(' '));
+            if (!user) user = getUser(args.join(' '));
             if (!user) user = message.member.user;
             var embed = { embed: {
                 color: main_color,
@@ -1128,7 +1138,7 @@ bot.on('message', message => {
             else if (args[0] == "allow"){
                 if (isBotAdmin(message.member)){
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args[1]);
+                    if (!user) user = getUser(args[1]);
                     if (user != undefined){
                         if (config[id].users == undefined){
                             config[id].users = {};
@@ -1160,7 +1170,7 @@ bot.on('message', message => {
             else if (args[0] == "disallow"){
                 if (isBotAdmin(message.member)){
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args[1]);
+                    if (!user) user = getUser(args[1]);
                     if (user != undefined){
                         if (config[id].users == undefined){
                             config[id].users = {};
@@ -1275,7 +1285,7 @@ bot.on('message', message => {
             if (!chnl){
                 chnl = channel;
             }
-            var user = tryGetUser(guild, guild.ownerID);
+            var user = getUser(guild.ownerID);
             var embed = {embed: {
             	color: main_color,
                 footer: {
@@ -1321,7 +1331,7 @@ bot.on('message', message => {
             message.channel.send(embed);
         }
         else if (command(channel, cmd, "server")){
-        	var owner = tryGetUser(guild, guild.ownerID);
+        	var owner = getUser(guild.ownerID);
         	var emotes;
         	if (guild.emojis.map(e => e).length == 0){
         		emotes = '---';
@@ -1429,7 +1439,7 @@ bot.on('message', message => {
             var user;
             if (args[0]){
                 user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args.join(' '));
+                if (!user) user = getUser(args.join(' '));
                 if (!user){
                     message.channel.send(`User not found.`);
                     return;
@@ -1469,7 +1479,7 @@ bot.on('message', message => {
                     return;
                 }
                 var user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args[0]);
+                if (!user) user = getUser(args[0]);
                 if (!user){
                     message.channel.send(`User not found.`);
                     return;
@@ -1512,7 +1522,7 @@ bot.on('message', message => {
                 if (isBotAdmin(message.member)){
                     args.splice(0, 2);
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args.join(' '));
+                    if (!user) user = getUser(args.join(' '));
                     if (user) member = guild.members.get(user.id);
                 }
                 if (getQuotes(member).length == 0){
@@ -1641,7 +1651,7 @@ bot.on('message', message => {
                 	var user;
                     args.splice(0, 1);
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args.join(' '));
+                    if (!user) user = getUser(args.join(' '));
                     if (!user) user = message.member.user;
                     message.channel.send(`ID of user "${user.username}": ${user.id}`)
                 }
@@ -1659,7 +1669,7 @@ bot.on('message', message => {
             else if (cmd == "exp"){
                 if (args[0] == "add"){
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args[1]);
+                    if (!user) user = getUser(args[1]);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
@@ -1681,7 +1691,7 @@ bot.on('message', message => {
                 }
                 else if (args[0] == "remove"){
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args[1]);
+                    if (!user) user = getUser(args[1]);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
@@ -1704,7 +1714,7 @@ bot.on('message', message => {
                 }
                 else if (args[0] == "set"){
                     var user = message.mentions.users.first();
-                    if (!user) user = tryGetUser(guild, args[1]);
+                    if (!user) user = getUser(args[1]);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
@@ -1731,7 +1741,7 @@ bot.on('message', message => {
                     return;
                 }
                 var user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args[0]);
+                if (!user) user = getUser(args[0]);
                 if (!user){
                     message.channel.send(`Specify a valid user to change their nickname.`);
                     return;
@@ -1753,7 +1763,7 @@ bot.on('message', message => {
                     return;
                 }
                 var user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args[0]);
+                if (!user) user = getUser(args[0]);
                 if (!user){
                     message.channel.send(`User not found.`);
                     return;
@@ -1796,7 +1806,7 @@ bot.on('message', message => {
                     send('Specifiy a user to ignore all their commands, on all servers.');
                 }
                 var user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args.join(' '));
+                if (!user) user = getUser(args.join(' '));
                 if (user){
                     if (!config.global) config.global = {};
                     if (!config.global.excluded_users) config.global.excluded_users = [];
@@ -1817,7 +1827,7 @@ bot.on('message', message => {
                     send('Specifiy a user to un-ignore all their commands, on all servers.');
                 }
                 var user = message.mentions.users.first();
-                if (!user) user = tryGetUser(guild, args.join(' '));
+                if (!user) user = getUser(args.join(' '));
                 if (user){
                     if (!config.global) config.global = {};
                     if (!config.global.excluded_users) config.global.excluded_users = [];
