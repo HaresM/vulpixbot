@@ -549,38 +549,23 @@ bot.on('message', message => {
     }
 
     function getUser(str){
-        if (!str) return;
-        var user;
-        while (str.contains('%20')){
-            str = str.replace('%20', ' ');
+        if (!str) return null;
+        while (str.contains('%20')){ str = str.replace('%20', ' '); }
+        var user = guild.members.map(m => m.user.username == str);
+        if (!user) user = guild.members.map(m => m.user.username.toLowerCase() == str.toLowerCase());
+        if (!user) user = guild.members.map(m => m.nickname == str);
+        if (!user) user = guild.members.map(m => m.nickname.toLowerCase() == str.toLowerCase());
+        if (!user && !isNaN(str)){
+            user = guild.members.map(m => m.id == str);
         }
-        if (userExists(guild, str)){
-            user = _getUser(guild, str);
-        }
-        else{
-            var name;
+        if (!user && str.contains('<@!')){
             try{
-                name = guild.members.find(m => m.nickname == str);
+                var id = str.split('<@!')[1].split('>')[0];
+                user = guild.members.map(m => m.id == id);
             }
-            catch (err){
-                try{
-                    if (!name) name = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase());
-                    if (name) user = name.user;
-                }
-                catch (err){
-                    return null;
-                }
-            }
+            catch (e) {}
         }
-        if (!user){
-            user = guild.members.get(str);
-            if (user) user = user.user;
-        }
-        if (!user){
-            var tmp = str.split('<@')[1].split('>')[0];
-            user = guild.members.get(tmp).user;
-        }
-        return user;
+        return user || null;
     }
 
     function getMember(str){
