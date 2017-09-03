@@ -533,24 +533,24 @@ bot.on('message', message => {
     var member = message.member;
     if (!config[id]) return;
     if (config.global && config.global.excluded_users && config.global.excluded_users.contains(message.author.id)) return;
+
     function canAddRole(user, role){
       if (!user || !role) return false
       if (role.constructor.name != 'Role'){
         role = guild.roles.find('name', role);
       }
-      if (user.constructor.name != 'User'){
-        user = getUser(guild, user);
-      }
-      if (!user) return false;
+      member = getMember(user);
+      if (!member) return false;
       var rolepos = role.position;
       var positions = guild.members.get(bot.user.id).roles.map(r => r.position);
-      var upositions = guild.members.get(user.id).roles.map(r => r.position);
+      var upositions = member.roles.map(r => r.position);
       return Math.max.apply(Math, positions) > role.position && Math.max.apply(Math, positions) > Math.max.apply(Math, upositions);  
     }
 
     function getUser(str){
         if (!str) return null;
         if (str.constructor && str.constructor.name == 'User') return str;
+        if (str.constructor) console.log(str.constructor.name)
         while (str.contains('%20')){ str = str.replace('%20', ' '); }
         var user = guild.members.find(m => m.user.username == str);
         if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
@@ -587,7 +587,6 @@ bot.on('message', message => {
         }
         member = getMember(str);
         var role = member.roles.find('name', role);
-        console.log(role);
         return role ? true : false;
     }
 
@@ -596,10 +595,10 @@ bot.on('message', message => {
         if (role.constructor.name != 'Role'){
           role = guild.roles.find('name', role);
         }
-        user = getUser(user);
+        member = getMember(user);
         if (!user) return false;
         if (canAddRole(user, role)){
-            guild.members.get(user.id).addRole(role);
+            member.addRole(role);
             return true;
         }
         else{
