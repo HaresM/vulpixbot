@@ -550,6 +550,7 @@ bot.on('message', message => {
 
     function getUser(str){
         if (!str) return null;
+        if (str.constructor && str.constructor.name == 'User') return str;
         while (str.contains('%20')){ str = str.replace('%20', ' '); }
         var user = guild.members.find(m => m.user.username == str);
         if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
@@ -569,6 +570,7 @@ bot.on('message', message => {
     }
 
     function getMember(str){
+        if (str.constructor && str.constructor.name == 'GuildMember') return str;
         user = getUser(str);
         if (user){
             return guild.members.get(user.id);
