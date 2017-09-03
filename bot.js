@@ -1578,6 +1578,7 @@ bot.on('message', message => {
             }});
         }
         if (config[id] && config[id].commands){
+            var args = message.content.split(' ');
             var cmd = args[0];
             console.log(args);
             var cmds = Object.keys(config[id].commands);
