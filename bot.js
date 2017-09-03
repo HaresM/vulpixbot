@@ -1577,38 +1577,37 @@ bot.on('message', message => {
                 }]
             }});
         }
-        if (config[id] && config[id].commands){
-            var args = message.content.split(' ');
-            var cmd = args[0];
-            console.log(args);
-            var cmds = Object.keys(config[id].commands);
-            for (i = 0; i < cmds.length; i++){
-                if (cmd == config[id].commands[cmds[i]]){
-                    if (!config[id].channels) config[id].channels = {};
-                    if (!config[id].channels[message.channel.id]) config[id].channels[message.channel.id] = {};
-                    if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
-                    if (!config[id].channels[message.channel.id].disabled_commands.contains(cmd)){
-                        try{
-                            str = config[id].commands[cmd];
-                            var cfg = config[id];
-                            var temp_config = config;
-                            var stop = false;
-                            for (i = 0; i < blacklist.length; i++){
-                                if (message.author.id == '270175313856561153') break;
-                                if (str.contains(blacklist[i])){
-                                    message.channel.send(`You are trying to evaluate something you are not authorized to.`);
-                                    stop = true;
-                                    break;
-                                }
+    }
+    if (config[id] && config[id].commands){
+        var args = message.content.split(' ');
+        args.splice(0, 1);
+        var cmds = Object.keys(config[id].commands);
+        for (i = 0; i < cmds.length; i++){
+            if (cmd == config[id].commands[cmds[i]]){
+                if (!config[id].channels) config[id].channels = {};
+                if (!config[id].channels[message.channel.id]) config[id].channels[message.channel.id] = {};
+                if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
+                if (!config[id].channels[message.channel.id].disabled_commands.contains(cmd)){
+                    try{
+                        str = config[id].commands[cmd];
+                        var cfg = config[id];
+                        var temp_config = config;
+                        var stop = false;
+                        for (i = 0; i < blacklist.length; i++){
+                            if (message.author.id == '270175313856561153') break;
+                            if (str.contains(blacklist[i])){
+                                message.channel.send(`You are trying to evaluate something you are not authorized to.`);
+                                stop = true;
+                                break;
                             }
-                            if (stop) return;
-                            eval(str);
-                            if (message.author.id != '270175313856561153') config = temp_config;
-                            config[id] = cfg;
                         }
-                        catch (e){
-                            botLog(`Failed to evaluate custom command \`${cmd}\`.\r\n${e.name}: ${e.message}`);
-                        }
+                        if (stop) return;
+                        eval(str);
+                        if (message.author.id != '270175313856561153') config = temp_config;
+                        config[id] = cfg;
+                    }
+                    catch (e){
+                        botLog(`Failed to evaluate custom command \`${cmd}\`.\r\n${e.name}: ${e.message}`);
                     }
                 }
             }
