@@ -1580,10 +1580,9 @@ bot.on('message', message => {
     }
     if (config[id] && config[id].commands){
         var args = message.content.split(' ');
-        args.splice(0, 1);
         var cmds = Object.keys(config[id].commands);
         for (i = 0; i < cmds.length; i++){
-            if (cmd == config[id].commands[cmds[i]]){
+            if (message.content.startsWith(config[id].commands[cmds[i]])){
                 if (!config[id].channels) config[id].channels = {};
                 if (!config[id].channels[message.channel.id]) config[id].channels[message.channel.id] = {};
                 if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
