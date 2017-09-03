@@ -2377,9 +2377,16 @@ If you feel there are methods missing to make it easier to create a command, ple
                     while (code.startsWith(' ')){
                         code = code.substr(1);
                     }
+                    var exists = config[id].commands[name] != undefined
+                    var oldcode = null;
+                    if (exists) oldcode = config[id].commands[name];
                     config[id].commands[name] = code;
                     saveConfig();
-                    message.channel.send(`Successfully created a new command: \`${name}\`.`);
+                    if (!exists) message.channel.send(`Successfully created a new command: \`${name}\`.`);
+                    if (exists){
+                        send(`Successfully overrode ${name}. Old code:\`\`\`\r\n${oldcode}\`\`\``);
+                        send(`New code:\r\n\`\`\`\r\${config[id].commands[name]\`\`\``);
+                    }
                 }
             }
             else if (args[1] == "delete"){
