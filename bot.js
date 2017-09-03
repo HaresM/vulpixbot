@@ -551,17 +551,17 @@ bot.on('message', message => {
     function getUser(str){
         if (!str) return null;
         while (str.contains('%20')){ str = str.replace('%20', ' '); }
-        var user = guild.members.map(m => m.user.username == str);
-        if (!user) user = guild.members.map(m => m.user.username.toLowerCase() == str.toLowerCase());
-        if (!user) user = guild.members.map(m => m.nickname == str);
-        if (!user) user = guild.members.map(m => m.nickname.toLowerCase() == str.toLowerCase());
+        var user = guild.members.find(m => m.user.username == str);
+        if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
+        if (!user) user = guild.members.find(m => m.nickname == str);
+        if (!user) user = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase());
         if (!user && !isNaN(str)){
-            user = guild.members.map(m => m.id == str);
+            user = guild.members.find(m => m.id == str);
         }
         if (!user && str.contains('<@!')){
             try{
                 var id = str.split('<@!')[1].split('>')[0];
-                user = guild.members.map(m => m.id == id);
+                user = guild.members.find(m => m.id == id);
             }
             catch (e) {}
         }
