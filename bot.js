@@ -550,7 +550,6 @@ bot.on('message', message => {
     function getUser(str){
         if (!str) return null;
         if (str.constructor && str.constructor.name == 'User') return str;
-        if (str.constructor) console.log(str.constructor.name)
         while (str.contains('%20')){ str = str.replace('%20', ' '); }
         var user = guild.members.find(m => m.user.username == str);
         if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
@@ -591,18 +590,39 @@ bot.on('message', message => {
     }
 
     function addRole(user, role){
-        if (!user || !role) return false
+        if (!user || !role) return false;
         if (role.constructor.name != 'Role'){
           role = guild.roles.find('name', role);
         }
         member = getMember(user);
-        if (!user) return false;
-        if (canAddRole(user, role)){
+        if (!member) return false;
+        if (canAddRole(member.user, role)){
             member.addRole(role);
             return true;
         }
         else{
-            send(`Could not add role \`${role}\` to user \`${user.username}\`.`);
+            send(`Could not add role \`${role.name}\` to user \`${member.user.username}\`.`);
+            return false;
+        }
+    }
+
+    function removeRole(user, role){
+        if (!user || !role) return false;
+        if (role.constructor.name != 'Role'){
+            role = guild.roles.find('name', role);
+        }
+        member = getMember(user);
+        if (!member) return false;
+        if (hasRole(member, role.name)){
+            try{
+                member.removeRole(role);
+                return true
+            }
+            catch (e){
+                return false;
+            }
+        }
+        else{
             return false;
         }
     }
