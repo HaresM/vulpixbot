@@ -580,16 +580,14 @@ bot.on('message', message => {
         }
     }
 
-    function hasRole(user, role){
+    function hasRole(str, role){
         if (!user || !role) return false
         if (role.constructor.name != 'Role'){
           role = guild.roles.find('name', role);
         }
-        if (user.constructor.name != 'User'){
-          user = getUser(user);
-        }
-        if (!user) return false;
-        var role = guild.members.get(user.id).roles.find('name', role);
+        member = getMember(str);
+        var role = member.roles.find('name', role);
+        console.log(role);
         return role ? true : false;
     }
 
