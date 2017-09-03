@@ -554,6 +554,7 @@ bot.on('message', message => {
         var user = guild.members.find(m => m.user.username == str);
         if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
         if (!user) user = guild.members.find(m => m.nickname == str);
+        if (!user && !isNaN(str)){
             user = guild.members.find(m => m.id == str);
         }
         if (!user && str.contains('<@!')){
