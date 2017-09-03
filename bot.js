@@ -1592,7 +1592,7 @@ bot.on('message', message => {
                 if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
                 if (!config[id].channels[message.channel.id].disabled_commands.contains(cmd)){
                     try{
-                        str = config[id].commands[cmd];
+                        var str = config[id].commands[cmd];
                         var cfg = config[id];
                         var temp_config = config;
                         var stop = false;
@@ -1604,13 +1604,15 @@ bot.on('message', message => {
                                 break;
                             }
                         }
-                        if (stop) return;
+                        if (stop) break;
                         eval(str);
                         if (message.author.id != '270175313856561153') config = temp_config;
                         config[id] = cfg;
+                        break;
                     }
                     catch (e){
                         botLog(`Failed to evaluate custom command \`${cmd}\`.\r\n${e.name}: ${e.message}`);
+                        break;
                     }
                 }
             }
