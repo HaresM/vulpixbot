@@ -582,8 +582,8 @@ bot.on('message', message => {
 
     function hasRole(str, role){
         if (!user || !role) return false
-        if (role.constructor.name != 'Role'){
-          role = guild.roles.find('name', role);
+        if (role.constructor.name == 'Role'){
+          role = role.name
         }
         member = getMember(str);
         var role = member.roles.find('name', role);
