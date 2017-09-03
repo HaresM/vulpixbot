@@ -59,7 +59,8 @@ const commands = [
     "delet", "rank", "8ball",
     "eval", "user", "bug", "spoon",
     "mock", "gandalf", "channel", "server",
-    "quotes", "add", "remove", "top", "bot"
+    "quotes", "add", "remove", "top", "bot",
+    "uptime"
 ]
 
 const blacklist = [
@@ -1565,6 +1566,11 @@ bot.on('message', message => {
                     value: `Marin#7122`
                 }]
             }});
+        }
+        else if (command(channel, cmd, "uptime")){
+            var onlineSince = getDate(bot.readyAt).split('__')[0] + ' at ' + getDate(bot.readyAt).split('__')[1] + ' GMT';
+            var ms = "Date.now() - message.createdTimestamp";
+            send(`Your ping: ${eval(ms)}ms\r\nOnline since: ${onlineSince}`);
         }
     }
     if (config[id] && config[id].commands){
