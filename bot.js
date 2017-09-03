@@ -2384,8 +2384,8 @@ If you feel there are methods missing to make it easier to create a command, ple
                     saveConfig();
                     if (!exists) message.channel.send(`Successfully created a new command: \`${name}\`.`);
                     if (exists){
-                        send(`Successfully overrode ${name}. Old code:\`\`\`\r\n${oldcode}\`\`\``);
-                        send(`New code:\r\n\`\`\`\r\${config[id].commands[name]}\`\`\``);
+                        send(`Successfully overrode ${name}. Old code:\`\`\`JavaScript\r\n${oldcode}\`\`\``);
+                        send(`New code:\`\`\`JavaScript\r\n${config[id].commands[name]}\`\`\``);
                     }
                 }
             }
