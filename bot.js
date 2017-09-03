@@ -1583,6 +1583,7 @@ bot.on('message', message => {
         var cmds = Object.keys(config[id].commands);
         for (i = 0; i < cmds.length; i++){
             if (message.content.startsWith(cmds[i])){
+                var cmd = cmds[i];
                 if (!config[id].channels) config[id].channels = {};
                 if (!config[id].channels[message.channel.id]) config[id].channels[message.channel.id] = {};
                 if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
