@@ -554,7 +554,7 @@ bot.on('message', message => {
         var user = guild.members.find(m => m.user.username == str);
         if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
         if (!user) user = guild.members.find(m => m.nickname == str);
-        if (!user) user = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase());
+        try{ if (!user) user = guild.members.find(m => m.nickname.toLowerCase() == str.toLowerCase()); } catch (e) {}
         if (!user && !isNaN(str)){
             user = guild.members.find(m => m.id == str);
         }
