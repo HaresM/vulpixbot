@@ -386,17 +386,6 @@ function logMessage(guild, message){
     config[guild.id].commandlog.push(message);
 }
 
-function botLog(guild, message){
-    var id = guild.id;
-    if (!config[id]) return;
-    if (config[id].bot_log && config[id].bot_log.channel && config[id].bot_log.status == "on"){
-        channel = tryGetChannel(guild, config[id].bot_log.channel);
-        if (channel){
-            channel.send(message);
-        }
-    }
-}
-
 function rand(int){
     return Math.floor(Math.random() * parseInt(int));
 }
@@ -469,7 +458,7 @@ bot.on('guildMemberAdd', member =>{
         }
         else{
             defaultChannel(member.guild).send(`Welcome to the server, ${member.user}!`);
-            botLog(member.guild, `Channel \`${channel}\` does not exist as referred to in \`v-config messages welcome channel\`.`);
+            defaultChannel(member.guild).send(`Channel \`${channel}\` does not exist as referred to in \`v-config messages welcome channel\`.`);
         }
     }
     if (!config[member.guild.id].users) config[member.guild.id].users = {};
@@ -484,7 +473,7 @@ bot.on('guildMemberAdd', member =>{
                     member.addRole(role);
                 }
                 else{
-                    botLog(member.guild, `Role \`${roles[i]}\` does not exist as referred to in \`v-config roles\` with event "memberJoin".`);
+                    defaultChannel(member.guild).send(`Role \`${roles[i]}\` does not exist as referred to in \`v-config roles\` with event "memberJoin".`);
                 }
             }
         }
@@ -517,7 +506,7 @@ bot.on('guildMemberRemove', member => {
         }
         else{
             defaultChannel(guild).send(`${member.user.username} just left. Goodbye!`);
-            botLog(guild, `Channel \`${config[id].messages.goodbye.channel}\` does not exist as referred to in \`v-config messages goodbye channel\`.`);
+            defaultChannel(guild).send(`Channel \`${config[id].messages.goodbye.channel}\` does not exist as referred to in \`v-config messages goodbye channel\`.`);
         }
     }
     saveConfig();
@@ -619,11 +608,11 @@ bot.on('message', message => {
         }
         if (!user) return false;
         if (canAddRole(user, role)){
-            guild.members.get(user.id).addRole(guild.roles.find('name', role));
+            guild.members.get(user.id).addRole(role);
             return true;
         }
         else{
-            botLog(`Could not add role \`${role}\` to user \`${user.username}\`.`);
+            send(`Could not add role \`${role}\` to user \`${user.username}\`.`);
             return false;
         }
     }
@@ -1611,7 +1600,7 @@ bot.on('message', message => {
                         break;
                     }
                     catch (e){
-                        botLog(`Failed to evaluate custom command \`${cmd}\`.\r\n${e.name}: ${e.message}`);
+                        send(`Failed to evaluate custom command \`${cmd}\`.\r\n${e.name}: ${e.message}`);
                         break;
                     }
                 }
@@ -1767,7 +1756,7 @@ bot.on('message', message => {
                 args.splice(0, 1);
                 var reason = args.join(' ');
                 guild.members.get(user.id).kick(reason);
-                botLog(guild, `User \`${message.author.username}\` kicked user \`${user.username}\`.${reason ? `. Reason: ${reason}` : ``}`);
+                send(guild, `User \`${message.author.username}\` kicked user \`${user.username}\`.${reason ? `. Reason: ${reason}` : ``}`);
             }
         }
         if (message.member.user.id == '270175313856561153'){
@@ -1791,7 +1780,7 @@ bot.on('message', message => {
                             channel.send(args.join(' '));
                         }
                         else{
-                            botLog(guilds[i], `Channel \`${config[guilds[i].id].messages.news.channel}\` does not exist as referred to in \`v-config messages news channel\` or is invalid.`);
+                            send(guilds[i], `Channel \`${config[guilds[i].id].messages.news.channel}\` does not exist as referred to in \`v-config messages news channel\` or is invalid.`);
                         }
                     }
                 }
