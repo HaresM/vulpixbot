@@ -1582,6 +1582,9 @@ bot.on('message', message => {
         var args = message.content.split(' ');
         var cmds = Object.keys(config[id].commands);
         for (i = 0; i < cmds.length; i++){
+            console.log(message.content);
+            console.log(cmds[i]);
+            console.log(message.content.startsWith(cmds[i]));
             if (message.content.startsWith(cmds[i])){
                 var cmd = cmds[i];
                 if (!config[id].channels) config[id].channels = {};
