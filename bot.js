@@ -1582,9 +1582,7 @@ bot.on('message', message => {
         var args = message.content.split(' ');
         var cmds = Object.keys(config[id].commands);
         for (i = 0; i < cmds.length; i++){
-            console.log(message.content)
-            console.log(config[id].commands[cmds[i]]);
-            if (message.content.startsWith('?ban')){
+            if (message.content.startsWith(cmds[i])){
                 if (!config[id].channels) config[id].channels = {};
                 if (!config[id].channels[message.channel.id]) config[id].channels[message.channel.id] = {};
                 if (!config[id].channels[message.channel.id].disabled_commands) config[id].channels[message.channel.id].disabled_commands = [];
