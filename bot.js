@@ -548,16 +548,6 @@ bot.on('message', message => {
       return Math.max.apply(Math, positions) > role.position && Math.max.apply(Math, positions) > Math.max.apply(Math, upositions);  
     }
 
-    function getMember(str){
-        user = getUser(str);
-        if (user){
-            return guild.members.get(user.id);
-        }
-        else{
-            return null;
-        }
-    }
-
     function getUser(str){
         if (!str) return;
         var user;
@@ -591,6 +581,16 @@ bot.on('message', message => {
             user = guild.members.get(tmp).user;
         }
         return user;
+    }
+
+    function getMember(str){
+        user = getUser(str);
+        if (user){
+            return guild.members.get(user.id);
+        }
+        else{
+            return null;
+        }
     }
 
     function hasRole(user, role){
@@ -1587,9 +1587,6 @@ bot.on('message', message => {
         var args = message.content.split(' ');
         var cmds = Object.keys(config[id].commands);
         for (i = 0; i < cmds.length; i++){
-            console.log(message.content);
-            console.log(cmds[i]);
-            console.log(message.content.startsWith(cmds[i]));
             if (message.content.startsWith(cmds[i])){
                 var cmd = cmds[i];
                 if (!config[id].channels) config[id].channels = {};
