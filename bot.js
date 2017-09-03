@@ -596,12 +596,7 @@ bot.on('message', message => {
         if (role.constructor.name != 'Role'){
           role = guild.roles.find('name', role);
         }
-        if (user.constructor.name == 'GuildMember'){
-            user = user.user;
-        }
-        else if (user.constructor.name != 'User'){
-          user = getUser(user);
-        }
+        user = getUser(user);
         if (!user) return false;
         if (canAddRole(user, role)){
             guild.members.get(user.id).addRole(role);
