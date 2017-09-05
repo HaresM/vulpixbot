@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 var fs = require('fs');
-var delet_this = JSON.parse(fs.readFileSync('database/delet_this.json')).memes;
 var vids = fs.readFileSync('database/thundaga.json');
 var eps = JSON.parse(vids);
 var config = {};
@@ -56,7 +55,7 @@ const commands = [
     "pc", "soon", "rand", "choose",
     "dex", "thundaga", "wikia", "ebs",
     "pbs+", "read", "lenny", "shrug",
-    "delet", "rank", "8ball",
+    "rank", "8ball",
     "eval", "user", "bug", "spoon",
     "mock", "gandalf", "channel", "server",
     "quotes", "add", "remove", "top", "bot",
@@ -65,8 +64,8 @@ const commands = [
 
 const blacklist = [
     'config', 'abort', 'exit', '.close', '()', 'guilds', 'while (', 'while(', 'process', 'kill',
-    'env', 'bot.', 'shut', 'token', 'eval', 'client', 'log', 'call', 'script', 'url', 'call', 'onreadystatechange',,
-    'console', 'heroku', 'database(', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'for (', 'for(', 'fs.',
+    'env.', '.env', 'bot.', 'shut', 'token', 'eval', 'client', 'log', 'call', 'script', 'url', 'call', 'onreadystatechange',,
+    'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
     'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', ']['
 ]
 
@@ -866,10 +865,6 @@ bot.on('message', message => {
         else if (command(channel, cmd, "shrug")){
             message.delete();
             message.channel.send("¯\\_(ツ)_/¯");
-        }
-        else if (command(channel, cmd, "delet")){
-            message.delete();
-            message.channel.send(delet_this[rand(delet_this.length)]);
         }
         else if (command(channel, cmd, "rank")){
             var user = message.mentions.users.first();
@@ -2382,7 +2377,7 @@ If you feel there are methods missing to make it easier to create a command, ple
                     if (exists) oldcode = config[id].commands[name];
                     config[id].commands[name] = code;
                     saveConfig();
-                    if (!exists) message.channel.send(`Successfully created a new command: \`${name}\`.`);
+                    if (!exists) send(`Successfully created a new command: \`${name}\`.`);
                     if (exists){
                         send(`Successfully overrode ${name}. Old code:\`\`\`JavaScript\r\n${oldcode}\`\`\``);
                         send(`New code:\`\`\`JavaScript\r\n${config[id].commands[name]}\`\`\``);
