@@ -77,8 +77,8 @@ As this mechanic is in place to encourage people to read the FAQ before asking q
 */
 
 const blacklist = [
-    'config', 'abort', '.exit', 'exit(', 'exit (' '.close', 'guilds', 'while (', 'while(', 'process', 'kill',
-    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=' 'url =', '.call', 'onreadystatechange',,
+    'config', 'abort', '.exit', 'exit(', 'exit (', '.close', 'guilds', 'while (', 'while(', 'process', 'kill',
+    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=', 'url =', '.call', 'onreadystatechange',,
     'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
     'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', ']['
 ]
