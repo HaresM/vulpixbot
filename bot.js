@@ -1659,21 +1659,21 @@ bot.on('message', message => {
             }
             else if (cmd == "exp"){
                 if (args[0] == "add"){
-                    var user = message.mentions.users.first();
-                    if (!user) user = getUser(args[1]);
+                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[args.length - 1])){
                         message.channel.send(`Invalid amount of experience to add.`);
                         return;
                     }
-                    var exp = parseInt(args[2]);
+                    var exp = parseInt(args[args.length - 1]);
                     if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
-                        message.channel.send(`Cannot add experience that is not divisible by 7.`);
+                        message.channel.send(`Cannot add experience that is not divisible by 7. (21 is valid, 22 is not, for instance.)`);
                         return;
                     }
                     config[id].ranks[user.id] += exp / 7;
@@ -1681,17 +1681,17 @@ bot.on('message', message => {
                     message.channel.send(`User "${user.username}" experience is now ${config[id].ranks[user.id] * 7}.`);
                 }
                 else if (args[0] == "remove"){
-                    var user = message.mentions.users.first();
-                    if (!user) user = getUser(args[1]);
+                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[args.length - 1])){
                         message.channel.send(`Invalid amount of experience to remove.`);
                         return;
                     }
-                    var exp = parseInt(args[2]);
+                    var exp = parseInt(args[args.length - 1]);
                     if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
@@ -1704,17 +1704,17 @@ bot.on('message', message => {
                     message.channel.send(`User "${user.username}" experience is now ${config[id].ranks[user.id] * 7}.`);
                 }
                 else if (args[0] == "set"){
-                    var user = message.mentions.users.first();
-                    if (!user) user = getUser(args[1]);
+                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[args.length - 1])){
                         message.channel.send(`Invalid amount of experience to set to.`);
                         return;
                     }
-                    var exp = parseInt(args[2]);
+                    var exp = parseInt(args[args.length - 1]);
                     if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
