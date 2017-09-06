@@ -62,9 +62,23 @@ const commands = [
     "uptime"
 ]
 
+
+/*
+if (isBotAdmin(member)){
+var mbrs = guild.members.map(m => m);
+for (i = 0; i < mbrs.length; i++){
+if (hasRole(mbrs[i], 'Queue')){
+mbrs[i].user.send(`Hello, ${mbrs[i].user.username}! You are a part of the Pokémon Mega Adventure Discord, but you have not joined the actual server yet; you are currently in queue. Please read the channel dedicated to rules called \`rules\` if you would like to join.
+If you want to join but don't know how, please read the FAQ, which can be found in the \`faq\` channel.
+As this mechanic is in place to encourage people to read the FAQ before asking questions, you will be kicked later, should you not have joined the server by then yet. You are welcome to rejoin, though!`)
+}
+}
+}
+*/
+
 const blacklist = [
-    'config', 'abort', 'exit', '.close', '()', 'guilds', 'while (', 'while(', 'process', 'kill',
-    'env.', '.env', 'bot.', 'shut', 'token', 'eval', 'client', 'log', 'call', 'script', 'url', 'call', 'onreadystatechange',,
+    'config', 'abort', '.exit', 'exit(', 'exit (' '.close', 'guilds', 'while (', 'while(', 'process', 'kill',
+    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=' 'url =', '.call', 'onreadystatechange',,
     'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
     'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', ']['
 ]
