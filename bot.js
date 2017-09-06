@@ -1659,7 +1659,7 @@ bot.on('message', message => {
             }
             else if (cmd == "exp"){
                 if (args[0] == "add"){
-                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user_args = args.slice(1, args.length - 1).join(' ');
                     var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
@@ -1681,7 +1681,7 @@ bot.on('message', message => {
                     message.channel.send(`User "${user.username}" experience is now ${config[id].ranks[user.id] * 7}.`);
                 }
                 else if (args[0] == "remove"){
-                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user_args = args.slice(1, args.length - 1).join(' ');
                     var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
@@ -1704,7 +1704,7 @@ bot.on('message', message => {
                     message.channel.send(`User "${user.username}" experience is now ${config[id].ranks[user.id] * 7}.`);
                 }
                 else if (args[0] == "set"){
-                    var user_args = args.slice(2, args.length - 1).join(' ');
+                    var user_args = args.slice(1, args.length - 1).join(' ');
                     var user = getUser(user_args);
                     if (!user){
                         message.channel.send(`User not found.`);
