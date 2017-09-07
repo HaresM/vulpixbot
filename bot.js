@@ -881,8 +881,8 @@ bot.on('message', message => {
             message.channel.send("¯\\_(ツ)_/¯");
         }
         else if (command(channel, cmd, "rank")){
-            var user = message.mentions.users.first();
-            if (!user) user = getUser(args.join(' '));
+            config[id].ranks = {};
+            var user = getUser(args.join(' '));
             if (!user) user = message.member.user;
             if (user.bot){
                 message.channel.send(`Bots do not have ranks.`);
@@ -1042,7 +1042,7 @@ bot.on('message', message => {
             }};
             if (config[id].users && config[id].users[user.id] && config[id].users[user.id].number){
                 embed.embed.fields.push({
-                    name: `User number`,
+                    name: `**User Number**`,
                     value: config[id].users[user.id].number,
                     inline: true
                 })
@@ -1245,6 +1245,7 @@ bot.on('message', message => {
             message.channel.send({files:['database/gandalf.gif']});
         }
         else if (command(channel, cmd, "top")){
+            if (!config[id].ranks) config[id].ranks = {};
             var page = parseInt(args[0]);
             if (isNaN(page)) page = 1;
             var sortable = [];
@@ -1672,6 +1673,7 @@ bot.on('message', message => {
             	}
             }
             else if (cmd == "exp"){
+                if (!config[id].ranks) config[id].ranks = {};
                 if (args[0] == "add"){
                     var user_args = args.slice(1, args.length - 1).join(' ');
                     var user = getUser(user_args);
@@ -1684,7 +1686,6 @@ bot.on('message', message => {
                         return;
                     }
                     var exp = parseInt(args[args.length - 1]);
-                    if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
                         message.channel.send(`Cannot add experience that is not divisible by 7. (21 is valid, 22 is not, for instance.)`);
@@ -1706,7 +1707,6 @@ bot.on('message', message => {
                         return;
                     }
                     var exp = parseInt(args[args.length - 1]);
-                    if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
                         message.channel.send(`Cannot remove experience that is not divisible by 7.`);
@@ -1729,7 +1729,6 @@ bot.on('message', message => {
                         return;
                     }
                     var exp = parseInt(args[args.length - 1]);
-                    if (!config[id].ranks) config[id].ranks = {};
                     if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
                     if (exp % 7 != 0){
                         message.channel.send(`Cannot set experience that is not divisible by 7.`);
@@ -1806,7 +1805,7 @@ bot.on('message', message => {
                     }
                 }
             }
-            if (cmd == "exclude_global"){
+            if (cmd == "ignore_global"){
                 if (!args[0]){
                     send('Specifiy a user to ignore all their commands, on all servers.');
                 }
@@ -1816,33 +1815,13 @@ bot.on('message', message => {
                     if (!config.global) config.global = {};
                     if (!config.global.excluded_users) config.global.excluded_users = [];
                     if (config.global.excluded_users.contains(user.id)){
-                        send('This user is already excluded from using commands globally!');
+                        config.global.excluded_users.splice(config.global.excluded_users.indexOf(user.id), 1);
+                        send(`No longer ignoring all ${user.username}'s commands.`);
                         return;
                     }
                     config.global.excluded_users.push(user.id);
                     saveConfig();
-                    send('Successfully excluded the user from Vulpix commands.');
-                }
-                else {
-                    send('User not found.');
-                }
-            }
-            if (cmd == "include_global"){
-                if (!args[0]){
-                    send('Specifiy a user to un-ignore all their commands, on all servers.');
-                }
-                var user = message.mentions.users.first();
-                if (!user) user = getUser(args.join(' '));
-                if (user){
-                    if (!config.global) config.global = {};
-                    if (!config.global.excluded_users) config.global.excluded_users = [];
-                    if (!config.global.excluded_users.contains(user.id)){
-                        send('This user is not excluded!');
-                        return;
-                    }
-                    config.global.excluded_users.splice(config.global.excluded_users.indexOf(user.id),1);
-                    saveConfig();
-                    send('Successfully un-excluded the user from using Vulpix commands.');
+                    send(`All ${user.username}'s commands will now be ignored.`);
                 }
                 else {
                     send('User not found.');
@@ -1882,12 +1861,12 @@ bot.on('message', message => {
                 if (setting == "msg"){
                     var msg = message.content.split('v-config messages welcome msg ')[1];
                     if (!msg){
-                        message.channel.send(`The current welcoming message is: \`\`\`${config[id]["messages"]["welcome"]["msg"]}\`\`\`\nUse this command to change the message:\`\`\`v-config messages welcome msg [message]\`\`\`Inside the message, \`(user)\` will be replaced with the joining user's username, whereas \`(@user)\` will tag the joining user.`);
+                        message.channel.send(`The current welcoming message is: \`\`\`\r\n${config[id]["messages"]["welcome"]["msg"]}\`\`\`\nUse this command to change the message:\`\`\`v-config messages welcome msg [message]\`\`\`Inside the message, \`(user)\` will be replaced with the joining user's username, whereas \`(@user)\` will tag the joining user.`);
                     }
                     else{
                         config[id].messages.welcome.msg = msg;
                         saveConfig();
-                        message.channel.send(`Successfully set welcome message to: \`\`\`${config[id].messages.welcome.msg}\`\`\``);
+                        message.channel.send(`Successfully set welcome message to: \`\`\`\r\n${config[id].messages.welcome.msg}\`\`\``);
                     }
                 }
                 else if (setting == "on"){
@@ -2440,7 +2419,7 @@ If you feel there are methods missing to make it easier to create a command, ple
                     message.channel.send(`Index too high or too low.`);
                     return;
                 }
-                send(`\`${keys[index]}\`:\r\n\`\`\`${config[id].commands[keys[index]]}\`\`\``);
+                send(`\`${keys[index]}\`:\r\n\`\`\`\r\n${config[id].commands[keys[index]]}\`\`\``);
             }
             else{
                 var cmds = "";
@@ -2448,7 +2427,7 @@ If you feel there are methods missing to make it easier to create a command, ple
                 for (i = 0; i < keys.length; i++){
                     cmds += `${i+1}.) ${keys[i]}\r\n`;
                 }
-                message.channel.send(`These are all custom commands currently configured:\`\`\`${keys.length == 0 ? `---` : cmds}\`\`\`To create a new command, use \`v-config commands create\`. To delete a command, use \`v-config commands delete [index]\`. To see the code behind a command, use \`v-config commands view [index]\`.`);
+                message.channel.send(`These are all custom commands currently configured:\`\`\`\r\n${keys.length == 0 ? `---` : cmds}\`\`\`To create a new command, use \`v-config commands create\`. To delete a command, use \`v-config commands delete [index]\`. To see the code behind a command, use \`v-config commands view [index]\`.`);
             }
         }
         else if (cmd == "database"){
