@@ -881,7 +881,7 @@ bot.on('message', message => {
             message.channel.send("¯\\_(ツ)_/¯");
         }
         else if (command(channel, cmd, "rank")){
-            config[id].ranks = {};
+            if (!config[id].ranks) config[id].ranks = {};
             var user = getUser(args.join(' '));
             if (!user) user = message.member.user;
             if (user.bot){
@@ -898,12 +898,7 @@ bot.on('message', message => {
                     break;
                 }
             }
-            if (!config[id].ranks){
-            	config[id].ranks = {};
-            }
-            if (!config[id].ranks[user.id]){
-            	config[id].ranks[user.id] = 0;
-            }
+            if (!config[id].ranks[user.id]) config[id].ranks[user.id] = 0;
             var exp = config[id].ranks[user.id] * 7 + " / " + req * 7;
             message.channel.send({embed:{
                 color: main_color,
