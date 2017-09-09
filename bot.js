@@ -732,7 +732,6 @@ bot.on('message', message => {
             message.channel.send(rand(args[0]));
         }
         else if (command(channel, cmd, "choose")){
-            console.log(args);
             var options = message.content.split('|');
             message.channel.send(options[rand(options.length)]);
         }
