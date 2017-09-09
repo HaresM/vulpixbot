@@ -722,7 +722,7 @@ bot.on('message', message => {
                 message.channel.send(`Specificy a PokéCommunity user to link the profile of.`);
                 return;
             }
-            message.channel.send('https://pokecommunity.com/~' + args.join(' '));
+            message.channel.send('https://pokecommunity.com/~' + args.join('%20'));
         }
         else if (command(channel, cmd, "soon")){
             message.delete();
@@ -733,7 +733,7 @@ bot.on('message', message => {
         }
         else if (command(channel, cmd, "choose")){
             console.log(args);
-            var options = args.split('|');
+            var options = message.content.split('|');
             message.channel.send(options[rand(options.length)]);
         }
         else if (command(channel, cmd, "dex")){
