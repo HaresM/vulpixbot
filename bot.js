@@ -1776,6 +1776,17 @@ bot.on('message', message => {
                 guild.members.get(user.id).kick(reason);
                 send(guild, `User \`${message.author.username}\` kicked user \`${user.username}\`.${reason ? `. Reason: ${reason}` : ``}`);
             }
+            else if (cmd == "clear"){
+                var messages = channel.messages.map(m => m)
+                for (i = 0; i < messages.length; i++){
+                  if (messages[i].member.user.id == bot.user.id){
+                    try{
+                      messages[i].delete();
+                    }
+                   catch (e){}
+                  }
+                }
+            }
         }
         if (message.member.user.id == '270175313856561153'){
             if (cmd == "sendnews"){
