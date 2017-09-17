@@ -732,7 +732,10 @@ bot.on('message', message => {
             message.channel.send(rand(args[0]));
         }
         else if (command(channel, cmd, "choose")){
-            var options = message.content.split('|');
+            var tmp = message.content.split(`${config[id].prefix}choose`);
+            tmp.splice(0, 1);
+            tmp = tmp.join(`${config[id].prefix}choose`);
+            var options = tmp.split('|');
             message.channel.send(options[rand(options.length)]);
         }
         else if (command(channel, cmd, "dex")){
