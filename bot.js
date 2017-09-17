@@ -1780,10 +1780,7 @@ bot.on('message', message => {
                 var messages = channel.messages.map(m => m)
                 for (i = 0; i < messages.length; i++){
                   if (messages[i].member.user.id == bot.user.id){
-                    try{
-                      messages[i].delete();
-                    }
-                   catch (e){}
+                    messages[i].delete();
                   }
                 }
             }
