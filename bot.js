@@ -18,14 +18,16 @@ ref.on('value', function(snapshot){
     console.log(e);
 })
 const level_curve = [ 0,
-  24,    54,    93,    135,   183,   // 1  - 5
-  234,   288,   351,   420,   495,   // 6  - 10
-  582,   684,   771,   867,   984,   // 11 - 15
-  1092,  1260,  1476,  1716,  1953,  // 16 - 20
-  2181,  2436,  2742,  3159,  3576,  // 21 - 25
-  4155,  4788,  5589,  6435,  7452,  // 26 - 30
-  8643,  9999,  11676, 13734, 15597, // 31 - 35
-  17898, 20496, 23163, 26721, 30000  // 36 - 40
+  24,    54,    93,     135,    183,   // 1  - 5
+  234,   288,   351,    420,    495,   // 6  - 10
+  582,   684,   771,    867,    984,   // 11 - 15
+  1092,  1260,  1476,   1716,   1953,  // 16 - 20
+  2181,  2436,  2742,   3159,   3576,  // 21 - 25
+  4155,  4788,  5589,   6435,   7452,  // 26 - 30
+  8643,  9999,  11676,  13734,  15597, // 31 - 35
+  17898, 20496, 23163,  26721,  30000, // 36 - 40
+  35000, 41000, 49000,  59000,  70000, // 41 - 45
+  83000, 98000, 115000, 133000, 154000 // 46 - 50
 ]
 
 const magic8ball = [
@@ -62,29 +64,15 @@ const commands = [
     "uptime"
 ]
 
-
-/*
-if (isBotAdmin(member)){
-var mbrs = guild.members.map(m => m);
-for (i = 0; i < mbrs.length; i++){
-if (hasRole(mbrs[i], 'Queue')){
-mbrs[i].user.send(`Hello, ${mbrs[i].user.username}! You are a part of the Pokémon Mega Adventure Discord, but you have not joined the actual server yet; you are currently in queue. Please read the channel dedicated to rules called \`rules\` if you would like to join.
-If you want to join but don't know how, please read the FAQ, which can be found in the \`faq\` channel.
-As this mechanic is in place to encourage people to read the FAQ before asking questions, you will be kicked later, should you not have joined the server by then yet. You are welcome to rejoin, though!`)
-}
-}
-}
-*/
-
 const blacklist = [
     'config', 'abort', '.exit', 'exit(', 'exit (', '.close', 'guilds', 'while (', 'while(', 'process', 'kill',
-    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=', 'url =', '.call', 'onreadystatechange',,
+    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=', 'url =', '.call', 'onreadystatechange',
     'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
     'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', ']['
 ]
 
 const admin_only = [
-    'member.', 'user.', 'guild.', 'cfg', 'message.', 'addRole', 'removeRole', 'hasRole'
+    'member.', 'user.', 'guild.', 'cfg', 'message.', 'addRole', 'removeRole', 'hasRole', 'send (', 'send('
 ]
 
 Array.prototype.contains = function(obj) {
@@ -122,7 +110,7 @@ String.prototype.capitalize = function(){
 
 function jsonToString(json){
     if (!json) return '---';
-    if (json.construcor == Array){
+    if (json.constructor == Array){
         return `[\n    "${json.join('",\n    "')}"\n]`
     }
     else{
