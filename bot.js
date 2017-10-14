@@ -619,6 +619,7 @@ bot.on('message', message => {
         var rle = getRole(role);
         if (!rle) return false;
         mbr.addRole(rle);
+        return true;
     }
     function hasRole(arg, role){
         var memb = getMember(arg);
