@@ -549,12 +549,13 @@ bot.on('message', message => {
     }
 
     function getChannel(arg){
+        if (arg && arg.constructor && arg.constructor.name == 'TextChannel') return arg;
         var chnl = guild.channels.find(c => c.name == arg);
         if (!chnl){
             chnl = guild.channels.get(arg);
         }
         if (!chnl){
-            chnl = guild.channels.find(c => c.name.toLowerCase() == arg.toLowerCase());
+            try{ chnl = guild.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
         }
         if (!chnl){
             if (arg.toString().contains('<#') && arg.toString().contains('>')){
@@ -572,7 +573,7 @@ bot.on('message', message => {
             user = guild.members.get(arg);
         }
         if (!user){
-            user = guild.members.find(m => m.user.username.toLowerCase() == arg.toLowerCase());
+            try{ user = guild.members.find(m => m.user.username.toLowerCase() == arg.toLowerCase()); } catch (e){}
         }
         if (!user){
             if (arg.toString().contains('<@') && arg.toString().contains('>')){
@@ -602,7 +603,7 @@ bot.on('message', message => {
             role = guild.roles.get(arg);
         }
         if (!role){
-            role = guild.roles.find(r => r.name.toLowerCase() == arg.toLowerCase());
+            try{ role = guild.roles.find(r => r.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
         }
         if (!role){
             if (arg.toString().contains('<@&') && arg.toString().contains('>')){
