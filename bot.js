@@ -590,42 +590,51 @@ bot.on('message', message => {
         return role ? true : false;
     }
 
-    function addRole(user, role){
-        if (!user || !role) return false;
-        if (role.constructor.name != 'Role'){
-          role = guild.roles.find('name', role);
+    function getRole(arg){
+        if (arg && arg.constructor && arg.constructor.name == 'Role') return arg;
+        var role = guild.roles.find(r => r.name == arg);
+        if (!role){
+            role = guild.roles.get(arg);
         }
-        member = getMember(user);
-        if (!member) return false;
-        if (canAddRole(member.user, role)){
-            member.addRole(role);
-            return true;
+        if (!role){
+            role = guild.roles.find(r => r.name.toLowerCase() == arg.toLowerCase());
         }
-        else{
-            send(`Could not add role \`${role.name}\` to user \`${member.user.username}\`.`);
-            return false;
+        if (!role){
+            if (arg.toString().contains('<@&') && arg.toString().contains('>')){
+                arg = arg.split('<@&')[1].split('>')[0];
+                role = guild.roles.get(arg);
+            }
         }
+        if (role && role.constructor && role.constructor.name == 'Role') return role;
+        return null;
+    }
+
+    function hasRole(arg, role){
+        var memb = getMember(arg);
+        if (!memb) return false;
+        var role = getRole(role);
+        if (!role) return false;
+        var foundrole = memb.roles.find(r => r.id == role.id);
+        if (foundrole) return true;
+        return false;
+    }
+
+    function addRole(member, role){
+        var mbr = getMember(member);
+        if (!mbr) return false;
+        var rle = getRole(role);
+        if (!rle) return false;
+        mbr.addRole(rle);
     }
 
     function removeRole(user, role){
-        if (!user || !role) return false;
-        if (role.constructor.name != 'Role'){
-            role = guild.roles.find('name', role);
-        }
-        member = getMember(user);
-        if (!member) return false;
-        if (hasRole(member, role.name)){
-            try{
-                member.removeRole(role);
-                return true
-            }
-            catch (e){
-                return false;
-            }
-        }
-        else{
-            return false;
-        }
+        var mbr = getMember(member);
+        if (!mbr) return false;
+        var rle = getRole(role);
+        if (!rle) return false;
+        if (!hasRole(mbr, rle)) return false;
+        mbr.removeRole(rle);
+        return true;
     }
 
     function send(msg, channel = null){
