@@ -548,48 +548,53 @@ bot.on('message', message => {
       return Math.max.apply(Math, positions) > role.position && Math.max.apply(Math, positions) > Math.max.apply(Math, upositions);  
     }
 
-    function getUser(str){
-        if (!str) return null;
-        if (str.constructor && str.constructor.name == 'User') return str;
-        while (str.contains('%20')){ str = str.replace('%20', ' '); }
-        var user = guild.members.find(m => m.user.username == str);
-        if (!user) user = guild.members.find(m => m.user.username.toLowerCase() == str.toLowerCase());
-        if (!user) user = guild.members.find(m => m.nickname == str);
-        if (!user && !isNaN(str)){
-            user = guild.members.find(m => m.id == str);
+    function getChannel(arg){
+        var chnl = guild.channels.find(c => c.name == arg);
+        if (!chnl){
+            chnl = guild.channels.get(arg);
         }
-        if (!user && str.contains('<@')){
-            try{
-                var id = str.split('<@')[1].split('>')[0];
-                if (str.contains('!')) str.splice(str.indexOf('!'), 0);
-                user = guild.members.find(m => m.id == id);
+        if (!chnl){
+            chnl = guild.channels.find(c => c.name.toLowerCase() == arg.toLowerCase());
+        }
+        if (!chnl){
+            if (arg.toString().contains('<#') && arg.toString().contains('>')){
+                arg = arg.split('<#')[1].split('>')[0];
+                chnl = guild.channels.get(arg);
             }
-            catch (e) {}
         }
-        return user || null;
+        return chnl;
     }
-
-    function getMember(str){
-        if (str.constructor && str.constructor.name == 'GuildMember') return str;
-        user = getUser(str);
-        if (user){
-            return guild.members.get(user.id);
+    function getUser(arg){
+        if (arg && arg.constructor && arg.constructor.name == 'User') return arg;
+        if (arg && arg.constructor && arg.constructor.name == 'GuildMember') return arg.user;
+        var user = guild.members.find(m => m.user.username == arg);
+        if (!user){
+            user = guild.members.get(arg);
         }
-        else{
-            return null;
+        if (!user){
+            user = guild.members.find(m => m.user.username.toLowerCase() == arg.toLowerCase());
         }
+        if (!user){
+            if (arg.toString().contains('<@') && arg.toString().contains('>')){
+                arg = arg.split('<@')[1].split('>')[0];
+                user = guild.members.get(arg);
+            }
+        }
+        if (!user){
+            user = guild.members.find(m => m.nickname == arg);
+        }
+        if (!user){
+            user = guild.members.find(m => m.nickname && m.nickname.toLowerCase() == arg.toLowerCase());
+        }
+        if (user && user.constructor && user.constructor.name == 'GuildMember') return user.user;
+        return null;
     }
-
-    function hasRole(str, role){
-        if (!user || !role) return false
-        if (role.constructor.name == 'Role'){
-          role = role.name
-        }
-        member = getMember(str);
-        var role = member.roles.find('name', role);
-        return role ? true : false;
+    function getMember(arg){
+        if (arg && arg.constructor && arg.constructor.name == 'GuildMember') return arg;
+        var user = getUser(arg);
+        if (user) return guild.members.get(user.id);
+        return null;
     }
-
     function getRole(arg){
         if (arg && arg.constructor && arg.constructor.name == 'Role') return arg;
         var role = guild.roles.find(r => r.name == arg);
@@ -608,7 +613,13 @@ bot.on('message', message => {
         if (role && role.constructor && role.constructor.name == 'Role') return role;
         return null;
     }
-
+    function addRole(member, role){
+        var mbr = getMember(member);
+        if (!mbr) return false;
+        var rle = getRole(role);
+        if (!rle) return false;
+        mbr.addRole(rle);
+    }
     function hasRole(arg, role){
         var memb = getMember(arg);
         if (!memb) return false;
@@ -617,14 +628,6 @@ bot.on('message', message => {
         var foundrole = memb.roles.find(r => r.id == role.id);
         if (foundrole) return true;
         return false;
-    }
-
-    function addRole(member, role){
-        var mbr = getMember(member);
-        if (!mbr) return false;
-        var rle = getRole(role);
-        if (!rle) return false;
-        mbr.addRole(rle);
     }
 
     function removeRole(user, role){
