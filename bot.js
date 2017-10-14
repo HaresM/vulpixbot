@@ -653,7 +653,7 @@ bot.on('message', message => {
         return true;
       }
       else{
-        var chnl = getChannel(guild, channel);
+        var chnl = getChannel(channel);
         if (chnl){
           chnl.send(msg).then(message => {
             if (message.content.contains(process.env.TOKEN)){
