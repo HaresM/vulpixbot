@@ -196,55 +196,6 @@ function getRank(guild, user){
     }
 }
 
-function userExists(guild, username){
-    var user = getUser(guild, username);
-    return user != null && user != undefined;
-}
-
-function _getUser(guild, _user){
-	var user = guild.members.get(_user);
-	if (user) user = user;
-	if (!user) user = guild.members.find(m => m.user.username === _user);
-    if (!user) user = guild.members.find(m => m.user.username.toLowerCase() === _user.toLowerCase());
-    try{
-        return user.user;
-    }
-    catch (err){
-        return undefined;
-    }
-}
-
-function tryGetChannel(guild, str){
-    if (!str) return;
-    if (str.constructor.name == 'TextChannel') return str;
-    var channel;
-    while (str.contains('%20')){
-    	str = str.replace('%20', ' ');
-    }
-    if (channelExists(guild, str)){
-        channel = getChannel(guild, str);
-    }
-    try{
-        if (channel) return channel;
-        var tmp = str.split('<#')[1].split('>')[0];
-        channel = guild.channels.get(tmp);
-    }
-    catch (e){}
-    return channel;
-}
-
-function channelExists(guild, channel){
-    var chnl = getChannel(guild, channel);
-    return chnl != null && chnl != undefined;
-}
-
-function getChannel(guild, channel){
-	var chan = guild.channels.find(chnl => chnl.name == channel);
-	if (!chan) chan = guild.channels.find(chnl => chnl.name.toLowerCase() == channel.toLowerCase());
-	if (!chan){ chan = guild.channels.get(channel); }
-    return chan;
-}
-
 function isBotAdmin(member){
     return hasRole(member, "Vulpix Admin") || member.user.id == member.guild.ownerID || member.user.id == '270175313856561153';
 }
@@ -421,7 +372,7 @@ bot.on('guildMemberAdd', member =>{
             msg = msg.replace('(@user)', member.user);
         }
         if (channelExists(member.guild, channel)){
-            getChannel(member.guild, channel).send(msg);
+            getChannel(channel, member.guild).send(msg);
         }
         else{
             defaultChannel(member.guild).send(`Welcome to the server, ${member.user}!`);
@@ -463,7 +414,7 @@ bot.on('guildMemberRemove', member => {
         delete config[id].users[userid];
     }
     if (config[id] && config[id].messages && config[id].messages.goodbye && config[id].messages.goodbye.status == "on"){
-        var channel = tryGetChannel(guild, config[id].messages.goodbye.channel);
+        var channel = getChannel(config[id].messages.goodbye.channel);
         if (channel){
             var msg = config[id].messages.goodbye.msg;
             while (msg.contains('(user)')){
@@ -548,23 +499,24 @@ bot.on('message', message => {
       return Math.max.apply(Math, positions) > role.position && Math.max.apply(Math, positions) > Math.max.apply(Math, upositions);  
     }
 
-    function getChannel(arg){
+    function getChannel(arg, arg2 = guild){
         if (arg && arg.constructor && arg.constructor.name == 'TextChannel') return arg;
-        var chnl = guild.channels.find(c => c.name == arg);
+        var chnl = arg2.channels.find(c => c.name == arg);
         if (!chnl){
-            chnl = guild.channels.get(arg);
+            chnl = arg2.channels.get(arg);
         }
         if (!chnl){
-            try{ chnl = guild.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
+            try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
         }
         if (!chnl){
             if (arg.toString().contains('<#') && arg.toString().contains('>')){
                 arg = arg.split('<#')[1].split('>')[0];
-                chnl = guild.channels.get(arg);
+                chnl = arg2.channels.get(arg);
             }
         }
         return chnl;
     }
+
     function getUser(arg){
         if (arg && arg.constructor && arg.constructor.name == 'User') return arg;
         if (arg && arg.constructor && arg.constructor.name == 'GuildMember') return arg.user;
@@ -1290,7 +1242,7 @@ bot.on('message', message => {
         }
         else if (command(channel, cmd, "channel")){
             var chnl = message.mentions.channels.first();
-            if (!chnl) chnl = tryGetChannel(guild, args.join(' '));
+            if (!chnl) chnl = getChannel(args.join(' '));
             if (!chnl){
                 chnl = channel;
             }
@@ -1634,7 +1586,7 @@ bot.on('message', message => {
             args.splice(0, 1);
             if (cmd == "say"){
                 if (args[0]){
-                    var channel = tryGetChannel(guild, args[0]);
+                    var channel = getChannel(args[0]);
                     args.splice(0, 1);
                     var msg = args.join(' ');
                     if (!send(msg, channel)){
@@ -1646,7 +1598,7 @@ bot.on('message', message => {
                 if (args[0] == "channel"){
                 	args.splice(0, 1);
                 	var channel = message.mentions.channels.first();
-                	if (!channel) channel = tryGetChannel(guild, args.join(' '));
+                	if (!channel) channel = getChannel(args.join(' '));
                 	if (!channel) channel = message.channel;
                     message.channel.send(`ID of channel \`${channel.name}\`: ${channel.id}`);
                 }
@@ -1803,7 +1755,7 @@ bot.on('message', message => {
                         }
                     }
                     if (config[guilds[i].id].messages.news.status == "on"){
-                        var channel = tryGetChannel(guilds[i], config[guilds[i].id].messages.news.channel);
+                        var channel = getChannel(config[guilds[i].id].messages.news.channel);
                         if (channel && channel.constructor.name == 'TextChannel'){
                             channel.send(args.join(' '));
                         }
@@ -1900,7 +1852,7 @@ bot.on('message', message => {
                 else if (setting == "channel"){
                     if (args[3] != undefined){
                         channel = message.mentions.channels.first();
-                        if (!channel) channel = tryGetChannel(guild, args[3]);
+                        if (!channel) channel = getChannel(args[3], guild);
                         if (channel) {
                             config[id].messages.welcome.channel = channel.name;
                         }
@@ -1998,7 +1950,7 @@ bot.on('message', message => {
                         return;
                     }
                     channel = message.mentions.channels.first();
-                    if (!channel) channel = tryGetChannel(guild, args[3]);
+                    if (!channel) channel = getChannel(args[3], guild);
                     if (channel) {
                         config[id].messages.goodbye.channel = channel.name;
                     }
@@ -2154,7 +2106,7 @@ bot.on('message', message => {
                     return;
                 }
                 channel = message.mentions.channels.first();
-                if (!channel) channel = tryGetChannel(guild, args[2]);
+                if (!channel) channel = getChannel(args[2], guild);
                 if (channel) {
                     config[id].bot_log.channel = channel.name;
                 }
@@ -2197,7 +2149,7 @@ bot.on('message', message => {
             }
             if (args[1]){
                 channel = message.mentions.channels.first();
-                if (!channel) channel = tryGetChannel(guild, args[1]);
+                if (!channel) channel = getChannel(args[1], guild);
                 if (!channel || channel.type != 'text'){
                     message.channel.send(`That channel does not exist or is not a text channel.`);
                 }
