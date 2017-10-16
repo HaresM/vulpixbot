@@ -295,6 +295,24 @@ function setDefaults(guild){
     }
 }
 
+function getSingleChannel(arg, arg2){
+    if (arg && arg.constructor && arg.constructor.name == 'TextChannel') return arg;
+    var chnl = arg2.channels.find(c => c.name == arg);
+    if (!chnl){
+        chnl = arg2.channels.get(arg);
+    }
+    if (!chnl){
+        try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
+    }
+    if (!chnl){
+        if (arg.toString().contains('<#') && arg.toString().contains('>')){
+            arg = arg.split('<#')[1].split('>')[0];
+            chnl = arg2.channels.get(arg);
+        }
+    }
+    return chnl;
+}
+
 function saveConfig(){
     ref.update(config);
 }
@@ -372,7 +390,7 @@ bot.on('guildMemberAdd', member =>{
             msg = msg.replace('(@user)', member.user);
         }
         if (channelExists(member.guild, channel)){
-            getChannel(channel, member.guild).send(msg);
+            getSingleChannel(channel, member.guild).send(msg);
         }
         else{
             defaultChannel(member.guild).send(`Welcome to the server, ${member.user}!`);
@@ -414,7 +432,7 @@ bot.on('guildMemberRemove', member => {
         delete config[id].users[userid];
     }
     if (config[id] && config[id].messages && config[id].messages.goodbye && config[id].messages.goodbye.status == "on"){
-        var channel = getChannel(config[id].messages.goodbye.channel);
+        var channel = getSingleChannel(config[id].messages.goodbye.channel);
         if (channel){
             var msg = config[id].messages.goodbye.msg;
             while (msg.contains('(user)')){
