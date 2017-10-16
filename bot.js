@@ -65,14 +65,14 @@ const commands = [
 ]
 
 const blacklist = [
-    'config', 'abort', '.exit', 'exit(', 'exit (', '.close', 'guilds', 'while (', 'while(', 'process', 'kill',
-    'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =', 'script=', 'url =', '.call', 'onreadystatechange',
-    'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
-    'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', ']['
+    'config.', 'config(', 'config (', 'abort(', 'abort (', '.abort', '.exit', 'exit(', 'exit (', '.close', '.guilds', 'guilds (', 'guilds(', 'while (', 'while(', 'process.',
+    'process (', 'proccess(', '.process', 'kill.', '.kill', 'kill(', 'kill (', 'env.', '.env', 'bot.', 'shut', 'token', 'eval(', 'eval (', '.client', 'client.', 'script =',
+    'script=', 'url =', '.call', 'onreadystatechange', 'console', 'heroku', 'database(', 'database (', 'database.', '.ref', 'firebase', 'serviceAccount', 'admin.', 'fs.',
+    'fs(', 'fs (', 'require \'', 'require "', 'require `', 'import \'', 'import "', 'import `', '][', 'var document', 'document.', 'document(', 'document ('
 ]
 
 const admin_only = [
-    'member.', 'user.', 'guild.', 'cfg', 'message.', 'addRole', 'removeRole', 'hasRole', 'send (', 'send('
+    'member.', 'user.', 'guild.', 'cfg', 'message.', 'addRole', 'removeRole', 'hasRole', 'send (', 'send(', 'channel.'
 ]
 
 Array.prototype.contains = function(obj) {
