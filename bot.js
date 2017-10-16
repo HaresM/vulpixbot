@@ -297,12 +297,12 @@ function setDefaults(guild){
 
 function getSingleChannel(arg, arg2){
     if (arg && arg.constructor && arg.constructor.name == 'TextChannel') return arg;
-    var chnl = arg2.channels.find(c => c.name == arg);
+    var chnl = arg2.channels.find(c => c.name == arg && c.type == 'text');
     if (!chnl){
         chnl = arg2.channels.get(arg);
     }
     if (!chnl){
-        try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
+        try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase() && c.type == 'text'); } catch (e){}
     }
     if (!chnl){
         if (arg.toString().contains('<#') && arg.toString().contains('>')){
@@ -521,12 +521,12 @@ bot.on('message', message => {
 
     function getChannel(arg, arg2 = guild){
         if (arg && arg.constructor && arg.constructor.name == 'TextChannel') return arg;
-        var chnl = arg2.channels.find(c => c.name == arg);
+        var chnl = arg2.channels.find(c => c.name == arg && c.type == 'text');
         if (!chnl){
             chnl = arg2.channels.get(arg);
         }
         if (!chnl){
-            try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase()); } catch (e){}
+            try{ chnl = arg2.channels.find(c => c.name.toLowerCase() == arg.toLowerCase() && c.type == 'text'); } catch (e){}
         }
         if (!chnl){
             if (arg.toString().contains('<#') && arg.toString().contains('>')){
