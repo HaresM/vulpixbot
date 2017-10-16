@@ -432,7 +432,7 @@ bot.on('guildMemberRemove', member => {
         delete config[id].users[userid];
     }
     if (config[id] && config[id].messages && config[id].messages.goodbye && config[id].messages.goodbye.status == "on"){
-        var channel = getSingleChannel(config[id].messages.goodbye.channel);
+        var channel = getSingleChannel(config[id].messages.goodbye.channel, guild);
         if (channel){
             var msg = config[id].messages.goodbye.msg;
             while (msg.contains('(user)')){
